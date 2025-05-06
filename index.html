@@ -24,7 +24,30 @@
       background: white; /* Thêm nền trắng để phân biệt */
       z-index: 1000; /* Đảm bảo nằm trên bản đồ nếu có chồng lấn */
       position: relative; /* Cần thiết cho z-index hoạt động */
-      /* flex-shrink: 0; /* Ngăn vùng này bị co lại */
+      /* Sử dụng Flexbox để bố trí các phần tử bên trong */
+      display: flex;
+      flex-direction: column; /* Mặc định các nhóm nhập và nút xếp dọc */
+      gap: 10px; /* Tạo khoảng cách giữa các hàng (nhóm input và nút) */
+    }
+
+    /* Hàng chứa hai ô nhập liệu */
+    .input-row {
+        display: flex; /* Bật Flexbox cho hàng này */
+        flex-direction: row; /* Xếp các ô nhập theo hàng ngang */
+        gap: 10px; /* Khoảng cách giữa ô xuất phát và ô đích đến */
+        align-items: center; /* Căn chỉnh các mục theo chiều dọc ở giữa */
+        flex-wrap: wrap; /* Cho phép xuống dòng nếu màn hình hẹp */
+    }
+
+    /* Vùng chứa từng cặp label và input */
+    .input-pair {
+        display: flex; /* Bật Flexbox cho từng cặp */
+        align-items: center; /* Căn chỉnh label và input theo chiều dọc */
+        gap: 5px; /* Khoảng cách giữa label và input */
+        /* Điều chỉnh kích thước các ô nhập */
+        flex-basis: 0; /* Điểm cơ sở */
+        flex-grow: 1; /* Cho phép mở rộng để điền đầy không gian */
+        min-width: 200px; /* Chiều rộng tối thiểu cho mỗi ô */
     }
 
     /* Div chứa bản đồ */
@@ -32,24 +55,31 @@
       flex-grow: 1; /* Cho phép bản đồ chiếm hết không gian còn lại theo chiều dọc */
       height: auto; /* Chiều cao tự động được quản lý bởi flex-grow */
     }
+
+     /* Điều chỉnh kiểu dáng cho nút nếu cần */
+     /* #selectOnMapButton { ... } */
+
   </style>
 </head>
 <body>
 
   <div class="input-area">
-      <label for="startPoint">Điểm xuất phát:</label>
-      <input type="text" id="startPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ"><br><br>
-
-      <label for="endPoint">Điểm đích đến:</label>
-      <input type="text" id="endPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ"><br><br>
-
+      <div class="input-row">
+          <div class="input-pair">
+              <label for="startPoint">Điểm xuất phát:</label>
+              <input type="text" id="startPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ">
+          </div>
+          <div class="input-pair">
+              <label for="endPoint">Điểm đích đến:</label>
+              <input type="text" id="endPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ">
+          </div>
+      </div>
       <button id="selectOnMapButton">Chọn trên bản đồ</button>
-      <p>Click vào bản đồ để chọn điểm Xuất phát và Đích đến.</p>
-  </div>
+      </div>
 
   <div id="map"></div>
 
-  <script src="script.js"></script>
+  <script src="/static/script.js"></script>
 
 </body>
 </html>
