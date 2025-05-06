@@ -1,43 +1,55 @@
-<!-- index.html -->
-<!-- Giao diện bản đồ Leaflet -->
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>OSM A* Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>#map { height: 100vh; }</style>
+  <meta charset="utf-8" />
+  <title>Tìm đường thực tế với OSM</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <style>
+    /* Thiết lập Flexbox cho body để quản lý bố cục chính */
+    body {
+      margin: 0; /* Xóa margin mặc định của body */
+      padding: 0; /* Xóa padding mặc định của body */
+      display: flex; /* Bật Flexbox */
+      flex-direction: column; /* Sắp xếp các phần tử con theo cột (trên xuống) */
+      height: 100vh; /* Đảm bảo body chiếm toàn bộ chiều cao màn hình */
+      overflow: hidden; /* Ngăn cuộn trang nếu nội dung tràn */
+    }
+
+    /* Vùng chứa các ô nhập liệu và nút */
+    .input-area {
+      padding: 10px;
+      background: white; /* Thêm nền trắng để phân biệt */
+      z-index: 1000; /* Đảm bảo nằm trên bản đồ nếu có chồng lấn */
+      position: relative; /* Cần thiết cho z-index hoạt động */
+      /* flex-shrink: 0; /* Ngăn vùng này bị co lại */
+    }
+
+    /* Div chứa bản đồ */
+    #map {
+      flex-grow: 1; /* Cho phép bản đồ chiếm hết không gian còn lại theo chiều dọc */
+      height: auto; /* Chiều cao tự động được quản lý bởi flex-grow */
+    }
+  </style>
 </head>
 <body>
+
+  <div class="input-area">
+      <label for="startPoint">Điểm xuất phát:</label>
+      <input type="text" id="startPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ"><br><br>
+
+      <label for="endPoint">Điểm đích đến:</label>
+      <input type="text" id="endPoint" placeholder="Chọn trên bản đồ hoặc nhập tọa độ"><br><br>
+
+      <button id="selectOnMapButton">Chọn trên bản đồ</button>
+      <p>Click vào bản đồ để chọn điểm Xuất phát và Đích đến.</p>
+  </div>
+
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([21.0285, 105.8542], 14); // Hà Nội
+  <script src="script.js"></script>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    let markers = [];
-    map.on('click', e => {
-      if (markers.length >= 2) return;
-      const marker = L.marker(e.latlng).addTo(map);
-      markers.push(marker);
-
-      if (markers.length === 2) {
-        const [start, end] = markers.map(m => m.getLatLng());
-        fetch(`/route?orig_lat=${start.lat}&orig_lon=${start.lng}&dest_lat=${end.lat}&dest_lon=${end.lng}`)
-        .then(res => res.json())
-        .then(data => {
-            console.log(data); // Kiểm tra dữ liệu trả về trong console
-            const latlngs = data.route.map(c => [c[0], c[1]]); // Truy cập key 'route'
-            L.polyline(latlngs, { color: 'red' }).addTo(map); // Vẽ đường đi trên bản đồ
-        })
-        .catch(err => console.error('Error fetching route:', err));
-      }
-    });
-  </script>
 </body>
 </html>
