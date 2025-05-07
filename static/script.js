@@ -1,7 +1,7 @@
 
 // Biến giữ đối tượng bản đồ Leaflet
 // Khởi tạo map sớm, nhưng chưa setView cố định
-const map = L.map('map').setView([10.850661, 106.798139], 15);
+const map = L.map('map').setView([10.850661, 106.798139], 10);
 
 // Thêm lớp bản đồ OpenStreetMap (vẫn dùng online tile cho nền trực quan)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -20,21 +20,25 @@ function veDuongDi(duongDi) {
 
   if (duongDi && duongDi.length > 0) {
       // Tạo đường polyline mới từ dữ liệu đường đi và thêm vào bản đồ
+      console.log("Dữ liệu đường đi:", duongDi); // Log để kiểm tra dữ liệu đường đi
       duongDanVe = L.polyline(duongDi, { color: 'blue' }).addTo(map);
       // Căn chỉnh bản đồ để hiển thị toàn bộ đường đi
       // Kiểm tra bounds hợp lệ trước khi fit
       if (duongDanVe.getBounds().isValid()) {
-         map.fitBounds(duongDanVe.getBounds());
+        map.fitBounds(duongDanVe.getBounds(), {
+            maxZoom: 16, // Giới hạn mức zoom tối đa khi hiển thị đường đi
+            padding: [50, 50] // Thêm khoảng cách xung quanh đường đi
+        });
       }
   } else {
       console.warn("Không có dữ liệu đường đi để vẽ.");
   }
 }
 
-map.setMaxBounds([
-    [10.843548, 106.785414], // Góc Tây Nam (South-West)
-    [10.850661, 106.798139]  // Góc Đông Bắc (North-East)
-]);
+// map.setMaxBounds([
+//     [10.843548, 106.785414], // Góc Tây Nam (South-West)
+//     [10.850661, 106.798139]  // Góc Đông Bắc (North-East)
+// ]);
 
 // Hàm thêm một điểm đánh dấu vào bản đồ
 function themDiemDanhDau(toaDo, nhan) {
